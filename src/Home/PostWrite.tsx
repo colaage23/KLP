@@ -1,14 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useState} from 'react';
+import {Background, ContentText, Icon} from '../Components/StyledComponent';
 import {
-  Background,
-  ContentText,
-  Icon,
-  RowView,
-} from '../Components/StyledComponent';
-import {
-  FlatList,
+  Alert,
   Keyboard,
   Pressable,
   SafeAreaView,
@@ -18,13 +13,93 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../Components/theme';
-import FastImage from 'react-native-fast-image';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
+import storage from '@react-native-firebase/storage';
+import database from '@react-native-firebase/database';
 
 const PostWrite = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState('');
   const [images, setImages] = useState<string[]>([]);
+
+  const imgAttachBtn = () => {
+    if (images.length <= 4) {
+      ImageCropPicker.openPicker({
+        cropping: false,
+        maxFiles: 5 - images.length,
+      })
+        .then(image => {
+          ImageResizer.createResizedImage(
+            image.path,
+            (image.width || image.height) > 3000
+              ? image.width / 5
+              : (image.width || image.height) > 2000
+              ? image.width / 2
+              : image.width,
+            (image.height || image.width) > 3000
+              ? image.height / 5
+              : (image.height || image.width) > 2000
+              ? image.height / 2
+              : image.height,
+            'JPEG',
+            100,
+          )
+            .then(resizes => {
+              setImages(prevImages => [...prevImages, resizes.uri]);
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(error => console.log('ImagePicker Error:', error));
+    }
+  };
+
+  const uploadImageToStorage = async (uri: string): Promise<string | null> => {
+    try {
+      const filename = uri.split('/').pop();
+      const reference = storage().ref(`posts/${filename}`);
+      await reference.putFile(uri);
+      const downloadURL = await reference.getDownloadURL();
+      return downloadURL;
+    } catch (err) {
+      console.log('Storage upload error:', err);
+      return null;
+    }
+  };
+
+  const savePost = async () => {
+    if (!title || !content) {
+      Alert.alert('제목과 내용을 입력해주세요.');
+      return;
+    }
+    if (images.length === 0) {
+      Alert.alert('최소 한 장의 이미지를 업로드해주세요.');
+    }
+
+    try {
+      const imageUrls = await Promise.all(
+        images.map(uri => uploadImageToStorage(uri)),
+      );
+
+      const postRef = database().ref('/posts').push();
+      await postRef.set({
+        title,
+        content,
+        tags,
+        images: imageUrls.filter(url => url !== null),
+        createdAt: new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
+      });
+
+      setTitle('');
+      setContent('');
+      setTags('');
+      setImages([]);
+    } catch (err) {
+      console.log('Save post error:', err);
+    }
+  };
+
   return (
     <Background>
       <SafeAreaView style={{flex: 1}}>
@@ -63,27 +138,35 @@ const PostWrite = () => {
             <ContentText bold>사진</ContentText>
           </InsertView>
         </Pressable>
+
         <ScrollView
           style={{marginTop: 5}}
           horizontal
           bounces={false}
           showsHorizontalScrollIndicator={false}>
           {images.length < 5 && (
-            <ImageBtn>
+            <ImageBtn onPress={imgAttachBtn}>
               <Icon source={require('../Image/ic_plus_circle_gray.png')} />
             </ImageBtn>
           )}
 
-          {images.map(item => {
+          {images.map((item, index) => {
             return (
-              <PostImage source={{uri: item}}>
-                <DelBtn>
+              <PostImage source={{uri: item}} key={index}>
+                <DelBtn
+                  onPress={() =>
+                    setImages(prev => prev.filter(img => img !== item))
+                  }>
                   <Icon source={require('../Image/ic_x_circle_white.png')} />
                 </DelBtn>
               </PostImage>
             );
           })}
         </ScrollView>
+
+        <SubmitBtn onPress={savePost}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>게시물 저장</Text>
+        </SubmitBtn>
       </SafeAreaView>
     </Background>
   );
@@ -133,4 +216,12 @@ const PostImage = styled.ImageBackground`
   border-radius: 8px;
   overflow: hidden;
   margin-right: 10px;
+`;
+
+const SubmitBtn = styled.TouchableOpacity`
+  background-color: ${theme.colors.main};
+  padding: 12px;
+  margin: 20px;
+  border-radius: 8px;
+  align-items: center;
 `;

@@ -2,155 +2,59 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import {Background, Icon} from '../Components/StyledComponent';
 import FABBtn from './Component/FABBtn';
 import PostList from './Component/PostList';
 import {PostListItem} from './Interface/Interface';
+import database from '@react-native-firebase/database';
 
 const Home = () => {
   const navigation = useNavigation();
 
-  const [list, setList] = useState<PostListItem[]>([
-    // 더미데이터
-    {
-      userName: 'JohnDoe',
-      title: 'First Post',
-      content: 'This is the content of the first post.',
-      date: '2023-10-01',
-      tag: [
-        'news',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-        'update',
-      ],
-      viewCount: 150,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'JaneSmith',
-      title: 'Second Post',
-      content:
-        'This is the content of the second postThis is the content of the second postThis is the content of the second postThis is the content of the second post.',
-      date: '2023-10-02',
-      tag: ['announcement'],
-      viewCount: 200,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'AliceJohnson',
-      title: 'Third Post',
-      content: 'This is the content of the third post.',
-      date: '2023-10-03',
-      tag: ['news'],
-      viewCount: 250,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'BobBrown',
-      title: 'Fourth Post',
-      content: 'This is the content of the fourth post.',
-      date: '2023-10-04',
-      tag: ['update'],
-      viewCount: 300,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'JohnDoe',
-      title: 'First Post',
-      content: 'This is the content of the first post.',
-      date: '2023-10-01',
-      tag: ['news', 'update'],
-      viewCount: 150,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'JaneSmith',
-      title: 'Second Post',
-      content:
-        'This is the content of the second postThis is the content of the second postThis is the content of the second postThis is the content of the second post.',
-      date: '2023-10-02',
-      tag: ['announcement'],
-      viewCount: 200,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'AliceJohnson',
-      title: 'Third Post',
-      content: 'This is the content of the third post.',
-      date: '2023-10-03',
-      tag: ['news'],
-      viewCount: 250,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'BobBrown',
-      title: 'Fourth Post',
-      content: 'This is the content of the fourth post.',
-      date: '2023-10-04',
-      tag: ['update'],
-      viewCount: 300,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'JohnDoe',
-      title: 'First Post',
-      content: 'This is the content of the first post.',
-      date: '2023-10-01',
-      tag: ['news', 'update'],
-      viewCount: 150,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'JaneSmith',
-      title: 'Second Post',
-      content:
-        'This is the content of the second postThis is the content of the second postThis is the content of the second postThis is the content of the second post.',
-      date: '2023-10-02',
-      tag: ['announcement'],
-      viewCount: 200,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'AliceJohnson',
-      title: 'Third Post',
-      content: 'This is the content of the third post.',
-      date: '2023-10-03',
-      tag: ['news'],
-      viewCount: 250,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-    {
-      userName: 'BobBrown',
-      title: 'Fourth Post',
-      content: 'This is the content of the fourth post.',
-      date: '2023-10-04',
-      tag: ['update'],
-      viewCount: 300,
-      thumbnail: 'https://static.cdn.kmong.com/gigs/ef3u71671517803.jpg',
-    },
-  ]);
+  const [list, setList] = useState<PostListItem[]>([]);
 
   // 검색
   const [search, setSearch] = useState('');
+
   const onSearch = () => {
     search.trim() && console.log('Searching for:', search);
   };
 
   // Paper FAB Handler
   const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const postRef = database().ref('/posts');
+
+    const onValueChange = postRef.on('value', snapshot => {
+      const posts = snapshot.val();
+      if (posts) {
+        const postArray: PostListItem[] = Object.keys(posts).map(key => {
+          const post = posts[key];
+          return {
+            userName: post.userName || 'Anonymous',
+            title: post.title,
+            content: post.content,
+            createdAt: new Date(post.createdAt).toLocaleDateString(),
+            tag: post.tags || [],
+            viewCount: post.viewCount || 0,
+            thumbnail:
+              post.images && post.images.length > 0 ? post.images[0] : '',
+          };
+        });
+        // 최신 순으로 정렬
+        postArray.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        setList(postArray);
+      } else {
+        setList([]);
+      }
+    });
+
+    return () => postRef.off('value', onValueChange);
+  }, []);
 
   return (
     <Background>

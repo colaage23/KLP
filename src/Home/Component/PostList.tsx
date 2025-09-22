@@ -23,7 +23,7 @@ const PostList = (item: PostListItem) => {
             </ContentText>
             <RowView between>
               <ContentText xxsmall right>
-                {dayjs(item.date).format('YYYY-MM-DD')}
+                {dayjs(item.createdAt).format('YYYY-MM-DD')}
               </ContentText>
               <RowView style={{gap: 5}}>
                 <Icon

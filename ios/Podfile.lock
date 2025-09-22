@@ -14,6 +14,12 @@ PODS:
     - FirebaseAuth (~> 8.12.0)
   - Firebase/CoreOnly (8.12.1):
     - FirebaseCore (= 8.12.1)
+  - Firebase/Database (8.12.1):
+    - Firebase/CoreOnly
+    - FirebaseDatabase (~> 8.12.0)
+  - Firebase/Storage (8.12.1):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 8.12.0)
   - FirebaseAuth (8.12.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
@@ -28,6 +34,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
     - nanopb (~> 2.30908.0)
+  - FirebaseDatabase (8.12.0):
+    - FirebaseCore (~> 8.0)
+    - leveldb-library (~> 1.22)
+  - FirebaseStorage (8.12.0):
+    - FirebaseCore (~> 8.0)
+    - GTMSessionFetcher/Core (~> 1.5)
   - fmt (6.2.1)
   - glog (0.3.5)
   - GoogleDataTransport (9.4.1):
@@ -60,6 +72,7 @@ PODS:
   - hermes-engine (0.72.8):
     - hermes-engine/Pre-built (= 0.72.8)
   - hermes-engine/Pre-built (0.72.8)
+  - leveldb-library (1.22.6)
   - libevent (2.1.12)
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -508,6 +521,14 @@ PODS:
     - Firebase/Auth (= 8.12.1)
     - React-Core
     - RNFBApp
+  - RNFBDatabase (14.5.1):
+    - Firebase/Database (= 8.12.1)
+    - React-Core
+    - RNFBApp
+  - RNFBStorage (14.5.1):
+    - Firebase/Storage (= 8.12.1)
+    - React-Core
+    - RNFBApp
   - RNImageCropPicker (0.37.3):
     - React-Core
     - React-RCTImage
@@ -578,6 +599,8 @@ DEPENDENCIES:
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
+  - "RNFBDatabase (from `../node_modules/@react-native-firebase/database`)"
+  - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -588,10 +611,13 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseDatabase
+    - FirebaseStorage
     - fmt
     - GoogleDataTransport
     - GoogleUtilities
     - GTMSessionFetcher
+    - leveldb-library
     - libevent
     - libwebp
     - nanopb
@@ -693,6 +719,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
     :path: "../node_modules/@react-native-firebase/auth"
+  RNFBDatabase:
+    :path: "../node_modules/@react-native-firebase/database"
+  RNFBStorage:
+    :path: "../node_modules/@react-native-firebase/storage"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
   RNScreens:
@@ -709,12 +739,15 @@ SPEC CHECKSUMS:
   FirebaseAuth: 5250d7bdba35e57cc34ec7ddc525f82b2757f2a0
   FirebaseCore: 8138de860a90ca7eec5e324da5788fb0ebf1d93c
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
+  FirebaseDatabase: f130b3d45b2a7a0b86059734d5bd67353df8d32f
+  FirebaseStorage: 4b75458c35d8b728e4c1fc1371942997456ab299
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   hermes-engine: 32c50dea8bf400d1414d26cb22a5e8a1ceb66a5e
+  leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
@@ -758,6 +791,8 @@ SPEC CHECKSUMS:
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: 5bae3002117e55f3c9aa0fb38175dd16c8046c90
   RNFBAuth: ed314ff1732011c23041570ac4a98bc6070f9f4d
+  RNFBDatabase: 3c0f5efe76714ca3a8838250fdefe26a85f3380e
+  RNFBStorage: 495f37ba9f233e3be134c8bc0f31ff011a9eecec
   RNImageCropPicker: 44e2807bc410741f35d4c45b6586aedfe3da39d2
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
@@ -768,4 +803,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e742aafafedb32224084d56c3b7aa18d3998bd5e
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.16.2
