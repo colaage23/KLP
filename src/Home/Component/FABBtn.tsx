@@ -2,11 +2,14 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import React from 'react';
+import React, {useRef} from 'react';
 import {ContentText, Icon, RowView} from '../../Components/StyledComponent';
 import theme from '../../Components/theme';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {FAB} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {useAuth} from '../../Login/hooks/useAuth'; // 위에서 만든 훅 import
+import LoginModal, {LoginModalRef} from '../../Components/Modal/LoginModal';
 
 interface FABProps {
   isExpanded: boolean;
@@ -14,8 +17,17 @@ interface FABProps {
 }
 
 const FABBtn = ({isExpanded, setIsExpanded}: FABProps) => {
+  const navigation = useNavigation<any>();
+  const loginModal = useRef<LoginModalRef>(null);
+  const {isLogin, logout, checkLoginStatus} = useAuth();
+
   const handleFabClick = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleLogoutPress = async () => {
+    setIsExpanded(false);
+    await logout();
   };
 
   return (
@@ -79,7 +91,7 @@ const FABBtn = ({isExpanded, setIsExpanded}: FABProps) => {
               zIndex: 2,
             }}>
             <ContentText style={{marginRight: 8}} white medium>
-              글작성
+              글 작성
             </ContentText>
             <FAB
               icon={() => {
@@ -96,6 +108,9 @@ const FABBtn = ({isExpanded, setIsExpanded}: FABProps) => {
                 borderRadius: 50,
               }}
               onPress={() => {
+                isLogin
+                  ? navigation.navigate('HomeStacks', {screen: 'PostWrite'})
+                  : loginModal.current?.visible();
                 setIsExpanded(false);
                 // navigation.navigate('Home_Stacks', {
                 //   screen: 'Regist',
@@ -103,43 +118,65 @@ const FABBtn = ({isExpanded, setIsExpanded}: FABProps) => {
               }}
             />
           </RowView>
-          <RowView
-            style={{
-              right: 3,
-              bottom: 135,
-              position: 'absolute',
-              zIndex: 2,
-            }}>
-            <ContentText style={{marginRight: 8}} white medium>
-              마이페이지
-            </ContentText>
-            <FAB
-              icon={() => {
-                return (
+          {isLogin && (
+            <RowView
+              style={{right: 3, bottom: 135, position: 'absolute', zIndex: 2}}>
+              <ContentText style={{marginRight: 8}} white medium>
+                로그아웃
+              </ContentText>
+              <FAB
+                icon={() => (
                   <Icon
                     size={24}
                     source={require('../../Image/ic_people_black.png')}
                   />
-                );
-              }}
-              style={{
-                backgroundColor: 'white',
-                width: 45,
-                height: 45,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 50,
-              }}
-              onPress={() => {
-                setIsExpanded(false);
-                // navigation.navigate('Home_Stacks', {
-                //   screen: 'Regist',
-                // });
-              }}
-            />
-          </RowView>
+                )}
+                style={{
+                  backgroundColor: 'white',
+                  width: 45,
+                  height: 45,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 50,
+                }}
+                onPress={handleLogoutPress}
+              />
+            </RowView>
+          )}
+
+          {!isLogin && (
+            <RowView
+              style={{right: 3, bottom: 135, position: 'absolute', zIndex: 2}}>
+              <ContentText style={{marginRight: 8}} white medium>
+                로그인
+              </ContentText>
+              <FAB
+                icon={() => (
+                  <Icon
+                    size={24}
+                    source={require('../../Image/ic_people_black.png')}
+                  />
+                )}
+                style={{
+                  backgroundColor: 'white',
+                  width: 45,
+                  height: 45,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 50,
+                }}
+                onPress={() => {
+                  setIsExpanded(false);
+                  navigation.navigate('LoginStacks', {
+                    screen: 'Login',
+                  });
+                }}
+              />
+            </RowView>
+          )}
         </>
       )}
+      <LoginModal ref={loginModal} />
     </>
   );
 };

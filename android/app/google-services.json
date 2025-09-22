@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "335926703252",
+    "firebase_url": "https://klp-mvp-app-default-rtdb.firebaseio.com",
+    "project_id": "klp-mvp-app",
+    "storage_bucket": "klp-mvp-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335926703252:android:a0411745686a2da280f081",
+        "android_client_info": {
+          "package_name": "com.klp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOBH5pbqoSmt-2jtSumoB-4hvmJT1w3sU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,8 +7,8 @@ import {ContentText, Icon, RowView} from '../../Components/StyledComponent';
 import {PostListItem} from '../Interface/Interface';
 import theme from '../../Components/theme';
 import FastImage from 'react-native-fast-image';
-import {isLogin} from '../../Utils/auth';
 import {FlatList, TouchableOpacity} from 'react-native';
+import dayjs from 'dayjs';
 
 const PostList = (item: PostListItem) => {
   return (
@@ -17,13 +17,13 @@ const PostList = (item: PostListItem) => {
         <RowView>
           <Thumnail source={{uri: item.thumbnail}} resizeMode="contain" />
           <ContentView>
-            <ContentText>{item.title}</ContentText>
+            <ContentText numberOfLines={1}>{item.title}</ContentText>
             <ContentText small numberOfLines={2}>
               {item.content}
             </ContentText>
             <RowView between>
               <ContentText xxsmall right>
-                {item.date}
+                {dayjs(item.date).format('YYYY-MM-DD')}
               </ContentText>
               <RowView style={{gap: 5}}>
                 <Icon

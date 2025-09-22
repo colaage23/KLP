@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 react {}
 
@@ -54,6 +55,8 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+
     implementation("com.facebook.react:react-android")
     implementation 'androidx.core:core:1.12.0'
     implementation 'androidx.core:core-ktx:1.12.0'

@@ -1,17 +1,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
-import {useState} from 'react';
-import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import FastImage from 'react-native-fast-image';
-import styled from 'styled-components/native';
-import {ContentText, Icon, RowView} from '../Components/StyledComponent';
-import theme from '../Components/theme';
-import {PostListItem} from './Interface/Interface';
-import PostList from './Component/PostList';
 import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {SafeAreaView, TouchableOpacity} from 'react-native';
+import styled from 'styled-components/native';
+import {Background, Icon} from '../Components/StyledComponent';
 import FABBtn from './Component/FABBtn';
+import PostList from './Component/PostList';
+import {PostListItem} from './Interface/Interface';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -175,6 +172,7 @@ const Home = () => {
           {list?.map((item, index) => (
             <PostList key={index} {...item} />
           ))}
+          <PaddingView />
         </ListView>
 
         {/* {FAB} */}
@@ -185,13 +183,6 @@ const Home = () => {
 };
 
 export default Home;
-
-const Background = styled.View`
-  flex: 1;
-  background-color: white;
-  padding: 15px;
-  gap: 15px;
-`;
 
 const SearchView = styled.View`
   height: 40px;
@@ -214,4 +205,8 @@ const SearchInput = styled.TextInput`
 const ListView = styled.ScrollView`
   flex: 1;
   width: 100%;
+`;
+
+const PaddingView = styled.View`
+  height: 50px;
 `;

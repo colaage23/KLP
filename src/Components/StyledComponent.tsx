@@ -39,7 +39,7 @@ export const ContentText = styled.Text<any>`
       : props.blue
       ? theme.colors.fontBlue
       : props.lightBlue
-      ? theme.colors.fontLightBlue
+      ? theme.colors.buttonBlue
       : props.red
       ? theme.colors.fontRed
       : props.gray
@@ -80,6 +80,13 @@ export const Icon = styled(FastImage)<any>`
   width: ${props => (props.size ? props.size : '25')}px;
   height: ${props => (props.size ? props.size : '25')}px;
   display: ${props => (props.hide ? 'none' : 'flex')};
+`;
+
+export const Background = styled.View`
+  flex: 1;
+  background-color: white;
+  padding: 15px;
+  gap: 15px;
 `;
 
 export const RowView = styled.View<any>`

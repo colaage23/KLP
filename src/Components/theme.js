@@ -52,7 +52,7 @@ const colors = {
   fontGreen: '#5BC467', //  더 진한 녹색
   fontDarkGreen: '#117C5B', // 어두운 녹색
   fontBlue: '#459EE2',
-  fontLightBlue: '#5C93FF',
+  buttonBlue: '#5C93FF',
   fontRed: '#FE5E59',
   fontWhite: '#ffffff',
   fontYellow: '#FFB300', // 별점색깔
